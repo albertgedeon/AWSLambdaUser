@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'user
+
+  SAM Template for user
+
+  '
+Globals:
+  Function:
+    Timeout: 5
+Resources:
+  UserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://albert-aws-lambda-bucket/eb8bf5a05077418d06bde58dd3e45aad
+      Handler: app.lambdaHandler
+      Runtime: nodejs10.x
+      VpcConfig:
+        SecurityGroupIds:
+        - sg-42f22837
+        SubnetIds:
+        - subnet-2e6c1a06
+        - subnet-0c773347
+        - subnet-3e5b6e64
+        - subnet-37fda64e
+      Events:
+        getUser:
+          Type: Api
+          Properties:
+            Path: /user/{id}
+            Method: get
+        getUsers:
+          Type: Api
+          Properties:
+            Path: /user
+            Method: get
+        createUser:
+          Type: Api
+          Properties:
+            Path: /user
+            Method: post
+        deleteUser:
+          Type: Api
+          Properties:
+            Path: /user/{id}
+            Method: delete
+        patchUser:
+          Type: Api
+          Properties:
+            Path: /user/{id}
+            Method: patch
+Outputs:
+  UserApi:
+    Description: API Gateway endpoint URL for Prod stage for User function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/user/
+  UserFunction:
+    Description: User Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - UserFunction
+      - Arn

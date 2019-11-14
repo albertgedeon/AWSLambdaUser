@@ -3,7 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   user
 
-  Sample SAM Template for user
+  SAM Template for user
   
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -17,28 +17,31 @@ Resources:
       CodeUri: .
       Handler: app.lambdaHandler
       Runtime: nodejs10.x
+      VpcConfig:
+        SecurityGroupIds: [sg-42f22837]
+        SubnetIds: [subnet-2e6c1a06,subnet-0c773347,subnet-3e5b6e64,subnet-37fda64e]
       Events:
-        GetUser:
+        getUser:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /user/{id}
             Method: get
-        GetUsers:
+        getUsers:
           Type: Api
           Properties:
             Path: /user
             Method: get
-        CreateUser:
+        createUser:
           Type: Api 
           Properties:
             Path: /user
             Method: post
-        DeleteUser:
+        deleteUser:
           Type: Api 
           Properties:
             Path: /user/{id}
             Method: delete
-        PatchUser:
+        patchUser:
           Type: Api 
           Properties:
             Path: /user/{id}
@@ -52,7 +55,7 @@ Outputs:
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/user/"
   UserFunction:
     Description: "User Lambda Function ARN"
-    Value: !GetAtt User.Arn
-  UserIamRole:
-    Description: "Implicit IAM Role created for User function"
-    Value: !GetAtt User.Arn
+    Value: !GetAtt UserFunction.Arn
+  # UserIamRole:
+  #   Description: "Implicit IAM Role created for User Function"
+  #   Value: !GetAtt UserIAMRole.Arn
